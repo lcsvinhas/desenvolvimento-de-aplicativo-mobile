@@ -1,4 +1,4 @@
-import AppRouter from './src/routes/AppRouter'
+import AppRouter from './src/routes'
 import { NavigationContainer } from '@react-navigation/native'
 
 export default function App() {
