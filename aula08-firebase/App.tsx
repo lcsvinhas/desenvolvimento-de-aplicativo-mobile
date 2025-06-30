@@ -1,7 +1,7 @@
 import { FlatList, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { db } from './src/firebaseConnection'
 import { useEffect, useState } from 'react';
-import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, setDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
 import UsuariosList from './src/components/UsuariosList';
 
 interface Usuario {
@@ -16,6 +16,7 @@ export default function App() {
   const [email, setEmail] = useState("")
   const [cargo, setCargo] = useState("")
   const [usuarios, setUsuarios] = useState<Usuario[]>([])
+  const [isEditing, setIsEditing] = useState("")
 
   useEffect(() => {
     function getDados() {
@@ -65,6 +66,24 @@ export default function App() {
     })
   }
 
+  function editUser(dados: Usuario) {
+    setNome(dados.nome)
+    setEmail(dados.email)
+    setCargo(dados.cargo)
+    setIsEditing(dados.id)
+  }
+
+  async function handleEditUser() {
+    const docRef = doc(db, "usuarios", isEditing)
+    await updateDoc(docRef, {
+      nome, email, cargo
+    })
+    setNome("")
+    setEmail("")
+    setCargo("")
+    setIsEditing("")
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle={"light-content"} />
@@ -78,13 +97,19 @@ export default function App() {
       <Text style={styles.label}>Cargo:</Text>
       <TextInput style={styles.input} value={cargo} onChangeText={(texto) => setCargo(texto)} />
 
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Adicionar</Text>
-      </TouchableOpacity>
+      {isEditing === "" ? (
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Adicionar</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity style={styles.button} onPress={handleEditUser}>
+          <Text style={styles.buttonText}>Atualizar</Text>
+        </TouchableOpacity>
+      )}
 
       <FlatList
         data={usuarios}
-        renderItem={({ item }) => <UsuariosList data={item} />}
+        renderItem={({ item }) => <UsuariosList data={item} handleEdit={(item) => editUser(item)} />}
         keyExtractor={(item) => String(item.id)}
       />
     </View>

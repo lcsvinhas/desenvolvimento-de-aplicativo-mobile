@@ -1,5 +1,5 @@
 {
-  "name": "aula08-firebase",
+  "name": "aula09-animacao",
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
@@ -11,7 +11,6 @@
   "dependencies": {
     "expo": "~53.0.13",
     "expo-status-bar": "~2.2.3",
-    "firebase": "^11.9.1",
     "react": "19.0.0",
     "react-native": "0.79.4",
     "react-dom": "19.0.0",
